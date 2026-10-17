@@ -1,0 +1,10 @@
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+-keep class com.waynfloosi.app.** { *; }
+-keepattributes Signature, *Annotation*
+-keep class com.google.gson.** { *; }
+-keep class androidx.security.crypto.** { *; }
+-dontwarn com.google.errorprone.annotations.**
