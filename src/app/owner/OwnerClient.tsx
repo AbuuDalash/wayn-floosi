@@ -2,11 +2,16 @@
 import { useEffect, useState } from 'react';
 
 interface DashboardData {
-  users: { total: number; premium: number; newThisMonth: number; activeThisMonth: number };
-  transactions: { total: number };
-  devices: { total: number };
-  revenue: { estimatedMonthlyFromPremium: number | null; note: string };
+  users: {
+    total: number; premium: number; free: number; newThisMonth: number;
+    activeThisMonth: number; growthPercent: string | null; androidDevices: number;
+  };
+  activity: { totalTransactions: number };
+  revenue: { confirmedSubscriptions: { note: string } };
+  disclaimer: string;
 }
+
+const PREMIUM_PRICE_SAR = 9;
 
 export default function OwnerClient() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -34,8 +39,8 @@ export default function OwnerClient() {
     { label: 'المشتركون المميزون', value: data.users.premium, icon: '⭐' },
     { label: 'جدد هذا الشهر', value: data.users.newThisMonth, icon: '🆕' },
     { label: 'نشطون هذا الشهر', value: data.users.activeThisMonth, icon: '📊' },
-    { label: 'إجمالي العمليات', value: data.transactions.total, icon: '💳' },
-    { label: 'أجهزة Android', value: data.devices.total, icon: '📱' },
+    { label: 'إجمالي العمليات', value: data.activity.totalTransactions, icon: '💳' },
+    { label: 'أجهزة Android', value: data.users.androidDevices, icon: '📱' },
   ];
 
   return (
@@ -65,15 +70,13 @@ export default function OwnerClient() {
               المشتركون المميزون × 9 ر.س/شهر
             </p>
             <p className="text-2xl font-bold mt-1" style={{ color: 'var(--success)' }}>
-              {data.revenue.estimatedMonthlyFromPremium !== null
-                ? `${data.revenue.estimatedMonthlyFromPremium.toFixed(2)} ر.س`
-                : 'غير متاح'}
+              {(data.users.premium * PREMIUM_PRICE_SAR).toFixed(2)} ر.س
             </p>
           </div>
           <div className="text-4xl">💰</div>
         </div>
         <p className="text-xs mt-3 p-3 rounded-lg" style={{ background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}>
-          ⚠️ {data.revenue.note}
+          ⚠️ {data.disclaimer} {data.revenue.confirmedSubscriptions.note}
         </p>
       </div>
 
