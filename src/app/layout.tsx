@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Noto_Sans_Arabic, Noto_Naskh_Arabic } from 'next/font/google';
 import './globals.css';
+import { SITE_URL } from '@/lib/site';
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ['arabic'],
@@ -17,6 +18,7 @@ const notoNaskhArabic = Noto_Naskh_Arabic({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     template: '%s | وين فلوسي؟',
     default: 'وين فلوسي؟ — تتبع مصروفاتك بذكاء',
@@ -37,7 +39,18 @@ export const metadata: Metadata = {
     siteName: 'وين فلوسي؟',
     title: 'وين فلوسي؟ — تتبع مصروفاتك بذكاء',
     description: 'تطبيق إدارة الميزانية الشخصية الأذكى في السعودية.',
+    url: '/',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'وين فلوسي؟ — تتبع مصروفاتك بذكاء' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'وين فلوسي؟ — تتبع مصروفاتك بذكاء',
+    description: 'تتبع مصروفاتك تلقائيًا من إشعارات البنك وخطط لميزانيتك حتى الراتب القادم. مجاني.',
+    images: ['/og.png'],
+  },
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
