@@ -58,7 +58,7 @@ export function autoCategory(merchant: string | null, description: string | null
   const text = `${merchant || ''} ${description || ''}`.toLowerCase();
 
   const categories: [string[], string][] = [
-    [['مطعم', 'restaurant', 'cafe', 'كافيه', 'مقهى', 'مكدونالد', 'ماكدونالد', 'برجر', 'بيتزا', 'kfc', 'food', 'طعام', 'أكل', 'شاورما', 'فطور', 'غداء', 'عشاء'], 'مطاعم وكافيهات'],
+    [['مطعم', 'restaurant', 'cafe', 'كافيه', 'مقهى', 'مكدونالد', 'ماكدونالد', 'mcdonald', 'برجر', 'بيتزا', 'kfc', 'food', 'طعام', 'أكل', 'شاورما', 'فطور', 'غداء', 'عشاء'], 'مطاعم وكافيهات'],
     [['سوبرماركت', 'supermarket', 'panda', 'بنده', 'carrefour', 'كارفور', 'lulu', 'لولو', 'hyper', 'هايبر', 'grocery', 'بقالة', 'تموينات', 'othaim', 'العثيم'], 'مواد غذائية'],
     [['uber', 'أوبر', 'lyft', 'careem', 'كريم', 'تاكسي', 'taxi', 'نقل', 'بنزين', 'وقود', 'fuel', 'gas', 'aramco', 'أرامكو', 'shell', 'شل', 'total', 'توتال', 'parking', 'مواقف'], 'نقل ومواصلات'],
     [['cinema', 'سينما', 'netflix', 'نتفليكس', 'spotify', 'ترفيه', 'gaming', 'game', 'ps', 'xbox', 'شاهد', 'stc tv', 'tik tok', 'youtube'], 'ترفيه واشتراكات'],
@@ -98,7 +98,7 @@ export function parseNotificationText(text: string): ParsedTransaction | null {
   };
 
   // OTP/security filter — discard
-  if (/\b(OTP|رمز|تحقق|verification|code|كود)\b/i.test(text)) {
+  if (/(OTP|رمز التحقق|تحقق|verification|رمز\s+\w|كود\s+\w|code\s+\w| code:)/i.test(text)) {
     return null;
   }
 
