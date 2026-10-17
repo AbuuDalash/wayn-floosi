@@ -1,0 +1,195 @@
+// Prisma schema — وين فلوسي؟
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserPlan {
+  FREE
+  PREMIUM
+}
+
+enum UserRole {
+  USER
+  OWNER
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum TransactionSource {
+  MANUAL
+  CSV_IMPORT
+  ANDROID_NOTIFICATION
+  OCR
+}
+
+enum SubscriptionFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum AlertType {
+  BUDGET_EXCEEDED
+  UNUSUAL_EXPENSE
+  DUPLICATE_DETECTED
+  SUBSCRIPTION_DUE
+  LOW_BALANCE
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String
+  passwordHash  String
+  plan          UserPlan     @default(FREE)
+  role          UserRole     @default(USER)
+  currency      String       @default("SAR")
+  salaryDay     Int          @default(25)  // day of month salary arrives
+  monthlySalary Decimal?     @db.Decimal(18, 2)
+  emailVerified Boolean      @default(false)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  lastLoginAt   DateTime?
+
+  transactions   Transaction[]
+  budgets        Budget[]
+  subscriptions  Subscription[]
+  alerts         Alert[]
+  androidDevices AndroidDevice[]
+  sessions       Session[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  userId      String
+  amount      Decimal           @db.Decimal(18, 2)
+  currency    String            @default("SAR")
+  type        TransactionType
+  category    String
+  merchant    String?
+  description String?
+  date        DateTime
+  source      TransactionSource @default(MANUAL)
+  isDuplicate Boolean           @default(false)
+  duplicateOf String?
+  rawText     String?           // original notification/OCR text
+  isRecurring Boolean           @default(false)
+  tags        String[]          @default([])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, category])
+  @@index([userId, merchant])
+  @@index([source])
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  userId     String
+  category   String
+  limitAmount Decimal  @db.Decimal(18, 2)
+  currency   String   @default("SAR")
+  period     String   @default("monthly") // monthly | weekly | yearly
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, period])
+  @@index([userId])
+}
+
+model Subscription {
+  id           String                @id @default(cuid())
+  userId       String
+  merchant     String
+  amount       Decimal               @db.Decimal(18, 2)
+  currency     String                @default("SAR")
+  frequency    SubscriptionFrequency @default(MONTHLY)
+  nextDueDate  DateTime?
+  lastChargedAt DateTime?
+  isActive     Boolean               @default(true)
+  category     String                @default("اشتراكات")
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isActive])
+}
+
+model Alert {
+  id        String    @id @default(cuid())
+  userId    String
+  type      AlertType
+  title     String
+  body      String
+  isRead    Boolean   @default(false)
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+}
+
+model AndroidDevice {
+  id          String    @id @default(cuid())
+  userId      String
+  deviceId    String    @unique
+  deviceName  String?
+  fcmToken    String?
+  lastSyncAt  DateTime?
+  isActive    Boolean   @default(true)
+  syncEnabled Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([deviceId])
+}
+
+// Owner analytics snapshots
+model DailySnapshot {
+  id                    String   @id @default(cuid())
+  date                  DateTime @unique
+  totalUsers            Int      @default(0)
+  activeUsers           Int      @default(0)
+  newUsers              Int      @default(0)
+  premiumUsers          Int      @default(0)
+  totalTransactions     Int      @default(0)
+  subscriptionRevenue   Decimal  @default(0) @db.Decimal(18, 2)
+  estimatedAdRevenue    Decimal  @default(0) @db.Decimal(18, 2)
+  operatingCosts        Decimal  @default(0) @db.Decimal(18, 2)
+  createdAt             DateTime @default(now())
+}

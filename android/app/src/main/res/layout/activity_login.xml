@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#0a0f1e" android:padding="24dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="center"
+        android:paddingTop="60dp" android:layoutDirection="rtl">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="💸" android:textSize="56sp" android:layout_marginBottom="8dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="وين فلوسي؟" android:textSize="28sp" android:textStyle="bold"
+            android:textColor="#22c55e" android:layout_marginBottom="4dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="سجّل دخولك لتفعيل الاستيراد التلقائي"
+            android:textSize="14sp" android:textColor="#94a3b8" android:layout_marginBottom="40dp"/>
+        <EditText android:id="@+id/emailField" android:layout_width="match_parent"
+            android:layout_height="56dp" android:hint="البريد الإلكتروني"
+            android:inputType="textEmailAddress" android:textColor="#f1f5f9"
+            android:textColorHint="#64748b" android:background="@drawable/input_bg"
+            android:padding="14dp" android:gravity="end"
+            android:textDirection="rtl" android:layoutDirection="rtl" android:layout_marginBottom="12dp"/>
+        <EditText android:id="@+id/passwordField" android:layout_width="match_parent"
+            android:layout_height="56dp" android:hint="كلمة المرور"
+            android:inputType="textPassword" android:textColor="#f1f5f9"
+            android:textColorHint="#64748b" android:background="@drawable/input_bg"
+            android:padding="14dp" android:gravity="end"
+            android:textDirection="rtl" android:layoutDirection="rtl" android:layout_marginBottom="8dp"/>
+        <TextView android:id="@+id/errorText" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:textColor="#ef4444"
+            android:textSize="13sp" android:gravity="end" android:visibility="gone"
+            android:layout_marginBottom="16dp"/>
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:visibility="gone" android:layout_marginBottom="8dp"/>
+        <Button android:id="@+id/loginBtn" android:layout_width="match_parent"
+            android:layout_height="56dp" android:text="تسجيل الدخول"
+            android:textSize="16sp" android:textColor="#ffffff"
+            android:background="@drawable/btn_primary" android:layout_marginTop="8dp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="لا تمتلك حسابًا؟ سجّل عبر الموقع الإلكتروني"
+            android:textSize="13sp" android:textColor="#64748b"
+            android:gravity="center" android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>
